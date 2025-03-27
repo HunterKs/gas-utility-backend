@@ -4,10 +4,73 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
+    <script>
+        function toggleForm() {
+            var formDiv = document.getElementById("requestForm");
+            if (formDiv.style.display === "none") {
+                formDiv.style.display = "block";
+            } else {
+                formDiv.style.display = "none";
+            }
+        }
+    </script>
 </head>
 <body>
     <h2>Welcome, {{ user.username }}!</h2>
     <p>You are logged in.</p>
+    
+    <h3>Your Service Requests</h3>
+    
+    <!-- Table for Service Requests -->
+    <table border="1">
+        <tr>
+            <th>Request Type</th>
+            <th>Description</th>
+            <th>Status</th>
+            {% if is_coordinator %}
+            <th>Actions</th>
+            {% endif %}
+        </tr>
+        {% for request in service_requests %}
+        <tr>
+            <td>{{ request.request_type }}</td>
+            <td>{{ request.description }}</td>
+            <td>{{ request.status }}</td>
+            {% if is_coordinator %}
+            <td>
+                <form method="POST" action="{% url 'update_status' request.id %}">
+                    {% csrf_token %}
+                    <select name="status">
+                        <option value="Pending" {% if request.status == "Pending" %}selected{% endif %}>Pending</option>
+                        <option value="In Progress" {% if request.status == "In Progress" %}selected{% endif %}>In Progress</option>
+                        <option value="Resolved" {% if request.status == "Resolved" %}selected{% endif %}>Resolved</option>
+                    </select>
+                    <button type="submit">Update</button>
+                </form>
+            </td>
+            {% endif %}
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="{% if is_coordinator %}4{% else %}3{% endif %}">No service requests found.</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <!-- Create Request Button -->
+    <button onclick="toggleForm()">Create a Request</button>
+
+    <!-- Service Request Form (Initially Hidden) -->
+    <div id="requestForm" style="display: none;">
+        <h3>Submit a Service Request</h3>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Submit Request</button>
+        </form>
+    </div>
+
+    <br>
     <a href="{% url 'logout' %}">Logout</a>
 </body>
 </html>

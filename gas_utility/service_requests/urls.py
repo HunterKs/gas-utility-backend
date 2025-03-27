@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import ServiceRequestViewSet, login_view, logout_view, home_view
+from .views import ServiceRequestViewSet, login_view, logout_view, home_view, update_request_status
 # from . import views 
 
 router = DefaultRouter()
@@ -11,4 +11,5 @@ urlpatterns = [
      path('home/', home_view, name='home'),
     path('logout/', logout_view, name='logout'),
     path('api/', include(router.urls)),  # API endpoints
+    path('update-request-status/<int:request_id>/', update_request_status, name='update_request_status'),
 ]
