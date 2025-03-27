@@ -4,8 +4,9 @@ from .models import ServiceRequest, CustomUser
 from django.contrib.auth.models import User
 from .serializers import ServiceRequestSerializer
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 
 class ServiceRequestViewSet(viewsets.ModelViewSet):
     """
@@ -33,10 +34,19 @@ def login_view(request):
         password = request.POST.get("password")
         user = authenticate(request, user_id=user_id, password=password)
 
+        # if user is not None:
+        #     login(request, user)
+        #     return redirect("home")  # Redirect to home page after login
+        # else:
+        #     return render(request, "login.html", {"error": "Invalid credentials"})
         if user is not None:
             login(request, user)
-            return redirect("home")  # Redirect to home page after login
+            return redirect('/api/')  # Redirect to API page or dashboard
         else:
-            return render(request, "login.html", {"error": "Invalid credentials"})
+            return HttpResponse("Invalid credentials", status=401)
 
     return render(request, "login.html")
+
+def logout_view(request):
+    logout(request)
+    return redirect('/login/')
