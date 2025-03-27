@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser, Group, Permission
 
 class ServiceRequest(models.Model):
     STATUS_CHOICES = [
@@ -18,3 +19,16 @@ class ServiceRequest(models.Model):
 
     def __str__(self):
         return f"{self.request_type} - {self.customer.username}"
+
+class CustomUser(AbstractUser):
+    user_id = models.CharField(max_length=50, unique=True)
+    is_coordinator = models.BooleanField(default=False)  # 0 for User, 1 for Coordinator
+
+    groups = models.ManyToManyField(Group, related_name="customuser_groups", blank=True)
+    user_permissions = models.ManyToManyField(Permission, related_name="customuser_permissions", blank=True)
+    
+    USERNAME_FIELD = 'user_id'  # Now users will log in with user_id instead of username
+    REQUIRED_FIELDS = ['username']  # username is still required internally
+
+    def __str__(self):
+        return self.username    
