@@ -1,7 +1,11 @@
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from .models import ServiceRequest
+from .models import ServiceRequest, CustomUser
+from django.contrib.auth.models import User
 from .serializers import ServiceRequestSerializer
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
 
 class ServiceRequestViewSet(viewsets.ModelViewSet):
     """
@@ -18,3 +22,21 @@ class ServiceRequestViewSet(viewsets.ModelViewSet):
         Assign the logged-in user as the customer when creating a request.
         """
         serializer.save(customer=self.request.user)
+
+
+def login_view(request):
+    """
+    Custom login view for handling user authentication.
+    """
+    if request.method == "POST":
+        user_id = request.POST.get("user_id")
+        password = request.POST.get("password")
+        user = authenticate(request, user_id=user_id, password=password)
+
+        if user is not None:
+            login(request, user)
+            return redirect("home")  # Redirect to home page after login
+        else:
+            return render(request, "login.html", {"error": "Invalid credentials"})
+
+    return render(request, "login.html")
