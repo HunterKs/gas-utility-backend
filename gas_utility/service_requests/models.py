@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.auth.models import AbstractUser, Group, Permission
+from django.conf import settings
+
 
 class ServiceRequest(models.Model):
     STATUS_CHOICES = [
@@ -9,7 +11,7 @@ class ServiceRequest(models.Model):
         ('Resolved', 'Resolved'),
     ]
 
-    customer = models.ForeignKey(User, on_delete=models.CASCADE)  # Links request to a user
+    customer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)  # Links request to a user
     request_type = models.CharField(max_length=100)  # Type of request (e.g., gas leak, billing issue)
     description = models.TextField()  # Detailed description of the request
     attachment = models.FileField(upload_to='attachments/', blank=True, null=True)  # File upload (optional)

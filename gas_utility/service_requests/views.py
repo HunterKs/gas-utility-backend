@@ -1,12 +1,14 @@
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from .models import ServiceRequest, CustomUser
-from django.contrib.auth.models import User
-from .serializers import ServiceRequestSerializer
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth import login, logout
 from django.http import HttpResponse
+from django.urls import reverse
+from .models import ServiceRequest
+from .serializers import ServiceRequestSerializer
+from .auth import authenticate_user, login_user, logout_user
+from django.contrib.auth.decorators import login_required
+
 
 class ServiceRequestViewSet(viewsets.ModelViewSet):
     """
@@ -24,29 +26,31 @@ class ServiceRequestViewSet(viewsets.ModelViewSet):
         """
         serializer.save(customer=self.request.user)
 
-
 def login_view(request):
     """
     Custom login view for handling user authentication.
     """
+    
+    error_message = None
     if request.method == "POST":
-        user_id = request.POST.get("user_id")
-        password = request.POST.get("password")
-        user = authenticate(request, user_id=user_id, password=password)
+        user = authenticate_user(request)
 
-        # if user is not None:
-        #     login(request, user)
-        #     return redirect("home")  # Redirect to home page after login
-        # else:
-        #     return render(request, "login.html", {"error": "Invalid credentials"})
         if user is not None:
             login(request, user)
-            return redirect('/api/')  # Redirect to API page or dashboard
+            return redirect("home")  # Change this to the actual view name
         else:
-            return HttpResponse("Invalid credentials", status=401)
+            error_message = "Invalid User ID or Password"
 
-    return render(request, "login.html")
+    return render(request, "login.html", {"error": error_message})
 
 def logout_view(request):
+    """Logs out the user and redirects to login page."""
     logout(request)
-    return redirect('/login/')
+    return redirect(reverse('login'))  # Use reverse() for flexibility
+
+@login_required
+def home_view(request):
+    """
+    Home page view for authenticated users.
+    """
+    return render(request, "home.html") 
