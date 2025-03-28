@@ -23,8 +23,7 @@ class ServiceRequestViewSet(viewsets.ModelViewSet):
     """
     queryset = ServiceRequest.objects.all()
     serializer_class = ServiceRequestSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]  # Only authenticated users can create/update requests
-
+    permission_classes = [IsAuthenticatedOrReadOnly]  
     def perform_create(self, serializer):
         """
         Assign the logged-in user as the customer when creating a request.
@@ -42,7 +41,7 @@ def login_view(request):
 
         if user is not None:
             login(request, user)
-            return redirect("home")  # Change this to the actual view name
+            return redirect("home")  
         else:
             error_message = "Invalid User ID or Password"
 
@@ -51,7 +50,7 @@ def login_view(request):
 def logout_view(request):
     """Logs out the user and redirects to login page."""
     logout(request)
-    return redirect(reverse('login'))  # Use reverse() for flexibility
+    return redirect(reverse('login'))  
 
 @login_required
 def home_view(request):
@@ -64,46 +63,39 @@ def home_view(request):
     if request.method == "POST":
         form = ServiceRequestForm(request.POST, request.FILES)
         
-        # Debugging - Check if the form is valid
+       
         if form.is_valid():
             service_request = form.save(commit=False)
-            if form.is_valid():
-                service_request.customer = request.user  # Ensure user is assigned
-                service_request.save()
-                print("Service Request Saved:", service_request.id)
-            else:
-              print("Form Errors:", form.errors)
 
-            # Debugging - Ensure user is authenticated
             if not user.is_authenticated:
                 return render(request, "home.html", {
                     "form": form, 
                     "error": "User is not authenticated"
                 })
 
-            service_request.customer = user  # Set the foreign key to the logged-in user
-            service_request.status = "Pending"  # Default status
+            service_request.customer = user  
+            service_request.status = "Pending"  
 
             try:
                 service_request.save()
-                return redirect("home")  # Refresh page after submission
+                return redirect("home")  
             except IntegrityError as e:
                 return render(request, "home.html", {
                     "form": form, 
                     "error": f"Database integrity error: {e}"
                 })
         else:
-            # Debugging - Show form errors
+           
             return render(request, "home.html", {
                 "form": form, 
                 "error": f"Form is not valid: {form.errors}"
             })
 
-    # Get service requests for user
+    
     if user.is_coordinator:
-        service_requests = ServiceRequest.objects.all()[:10]  # Show 10 for coordinators
+        service_requests = ServiceRequest.objects.all()[:10]  
     else:
-        service_requests = ServiceRequest.objects.filter(customer=user)[:5]  # Show 5 for normal users
+        service_requests = ServiceRequest.objects.filter(customer=user)[:5]  
 
     return render(request, "home.html", {
         "form": form,
@@ -112,7 +104,7 @@ def home_view(request):
     })
         
 
-# @csrf_exempt
+
 @login_required
 def update_request_status(request, request_id):
     """

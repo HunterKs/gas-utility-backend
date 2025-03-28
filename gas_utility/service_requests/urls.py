@@ -7,9 +7,9 @@ router = DefaultRouter()
 router.register(r'service-requests', ServiceRequestViewSet)
 
 urlpatterns = [
-    path('', login_view, name='login'),  # Default route now loads login page
+    path('', login_view, name='login'), 
      path('home/', home_view, name='home'),
     path('logout/', logout_view, name='logout'),
-    path('api/', include(router.urls)),  # API endpoints
+    path('api/', include(router.urls)),  
     path('update-request-status/<int:request_id>/', update_request_status, name='update_request_status'),
 ]

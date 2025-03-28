@@ -3,6 +3,7 @@ from django.contrib.auth.admin import UserAdmin
 from .models import ServiceRequest, CustomUser
 
 @admin.register(ServiceRequest)
+
 class ServiceRequestAdmin(admin.ModelAdmin):
     list_display = ('id', 'customer', 'request_type', 'status', 'submitted_at', 'resolved_at')
     list_filter = ('status', 'submitted_at')
@@ -26,6 +27,6 @@ class CustomUserAdmin(UserAdmin):
         ),
     )
 
-    ordering = ('user_id',)  # Order by user_id instead of username
+    ordering = ('user_id',)  
 
 admin.site.register(CustomUser, CustomUserAdmin)

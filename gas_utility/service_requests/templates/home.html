@@ -21,7 +21,6 @@
     
     <h3>Your Service Requests</h3>
     
-    <!-- Table for Service Requests -->
     <table border="1">
         <tr>
             <th>Request Type</th>
@@ -57,10 +56,8 @@
         {% endfor %}
     </table>
 
-    <!-- Create Request Button -->
     <button onclick="toggleForm()">Create a Request</button>
 
-    <!-- Service Request Form (Initially Hidden) -->
     <div id="requestForm" style="display: none;">
         <h3>Submit a Service Request</h3>
         <form method="POST" enctype="multipart/form-data">
