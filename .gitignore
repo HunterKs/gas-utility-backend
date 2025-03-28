@@ -1,0 +1,30 @@
+# Ignore compiled Python files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Ignore virtual environment
+venv/
+env/
+
+# Ignore database and media uploads
+db.sqlite3
+/media/
+
+/gas_utility/         # Project root
+│── /service_requests/  # App for managing service requests
+│   │── migrations/     # Database migrations
+│   │── templates/      # HTML templates
+│   │   ├── submit_request.html
+│   │   ├── track_requests.html
+│   │── forms.py        # Django forms for request submission
+│   │── models.py       # Database models
+│   │── views.py        # Request submission and tracking logic
+│   │── urls.py         # URL routing for the app
+│   │── admin.py        # Django admin panel customization
+│── /static/            # Static files (CSS, JavaScript)
+│── /media/             # Uploaded files (attachments)
+│── settings.py         # Project configurations
+│── urls.py             # Main URL routing
+│── wsgi.py             # WSGI configuration for deployment
+│── manage.py           # Django command-line utility
