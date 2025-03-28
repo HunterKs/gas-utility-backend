@@ -1,15 +1,3 @@
-# Ignore compiled Python files
-__pycache__/
-*.py[cod]
-*$py.class
-
-# Ignore virtual environment
-venv/
-env/
-
-# Ignore database and media uploads
-db.sqlite3
-/media/
 
 /gas_utility/         # Project root
 │── /service_requests/  # App for managing service requests
@@ -28,3 +16,45 @@ db.sqlite3
 │── urls.py             # Main URL routing
 │── wsgi.py             # WSGI configuration for deployment
 │── manage.py           # Django command-line utility
+
+
+#!/bin/bash
+
+# ==============================
+# Django Service Request Tracker
+# ==============================
+# This script sets up the Django project and includes a detailed explanation
+# of the application's workflow and potential future improvements.
+
+# -------------------------------------------------
+# Project Overview:
+# -----------------
+# - The company provides each user with a **User ID and Password**.
+# - Once logged in, users can:
+#   1. View their **past service requests** along with their current status.
+#   2. Track request updates, including submission and resolution timestamps.
+#   3. Access their **profile details** stored by the company.
+#   4. **Submit new service requests** with relevant details and file attachments.
+# - The **coordinator** accesses a separate dashboard to:
+#   1. View all service requests submitted by users.
+#   2. Update the **status** of service requests after processing.
+#   3. Resolve tickets by providing necessary actions or assigning resources.
+
+# -------------------------------------------------
+# Scalability & Future Enhancements:
+# ----------------------------------
+# - The current system is implemented with a **relational database (SQLite/PostgreSQL)**.
+# - It can be **scaled** by integrating a larger database (e.g., MySQL, PostgreSQL, MongoDB).
+# - Future updates can include:
+#   1. **Worker Assignment System**:
+#      - Each request can be assigned to a specific worker/technician.
+#      - Live tracking of service request progress can be added.
+#   2. **Real-time Notifications**:
+#      - Users get notified when their request status changes.
+#      - Coordinators receive updates for new requests.
+#   3. **Mobile Application Support**:
+#      - Developing a mobile app version for easy request tracking.
+#   4. **AI-Powered Auto-Ticketing**:
+#      - Automatically categorize and assign requests based on historical data.
+
+# -------------------------------------------------
